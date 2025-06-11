@@ -85,7 +85,7 @@ def generate_instructions(plant_name):
                 return None
             elif "Model not available" in status_message:
                 print("tinyllama model not found. You need to pull it first.")
-                user_input = input("Do you want to pull the tinyllama model now? (y/n): ")
+                user_input = 'y'
                 if user_input.lower() == 'y':
                     print("Pulling tinyllama model (this may take a while)...")
                     try:
