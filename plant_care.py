@@ -62,6 +62,34 @@ def check_ollama_status():
         return False, f"Error checking Ollama status: {str(e)}"
 
 
+def call_ollama_api(model, prompt):
+    """Make a request to the Ollama API and return the response text."""
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": model, "prompt": prompt, "stream": False},
+        )
+
+        if response.status_code == 200:
+            result = response.json()
+            return result.get("response", "")
+        else:
+            # If API call fails, it might be because model wasn't actually ready
+            # Remove the state file so we'll check again next time
+            if os.path.exists(MODEL_STATE_FILE):
+                os.remove(MODEL_STATE_FILE)
+            print(
+                f"Error: API request failed with status code {response.status_code}"
+            )
+            return None
+    except requests.exceptions.ConnectionError:
+        # If connection fails, remove state file to force a recheck next time
+        if os.path.exists(MODEL_STATE_FILE):
+            os.remove(MODEL_STATE_FILE)
+        print("Error: Lost connection to Ollama server")
+        return None
+
+
 def generate_instructions(plant_name):
     """Generate care instructions for the given plant using Ollama's tinyllama model."""
     prompt = f"""
@@ -116,49 +144,29 @@ def generate_instructions(plant_name):
                 return None
 
         # Generate text using Ollama API
-        try:
-            response = requests.post(
-                "http://localhost:11434/api/generate",
-                json={"model": "tinyllama", "prompt": prompt, "stream": False},
-            )
-
-            if response.status_code == 200:
-                result = response.json()
-                generated_text = result.get("response", "")
-
-                # Check if the plant is unknown
-                unknown_patterns = [
-                    "not a known plant",
-                    "don't recognize this plant",
-                    "couldn't find information",
-                    "not a recognized plant",
-                    "unable to identify",
-                    "not a valid plant",
-                ]
-
-                if any(
-                    pattern.lower() in generated_text.lower()
-                    for pattern in unknown_patterns
-                ):
-                    print(f"'{plant_name}' appears to be unknown.")
-                    return None
-
-                return generated_text
-            else:
-                # If API call fails, it might be because model wasn't actually ready
-                # Remove the state file so we'll check again next time
-                if os.path.exists(MODEL_STATE_FILE):
-                    os.remove(MODEL_STATE_FILE)
-                print(
-                    f"Error: API request failed with status code {response.status_code}"
-                )
-                return None
-        except requests.exceptions.ConnectionError:
-            # If connection fails, remove state file to force a recheck next time
-            if os.path.exists(MODEL_STATE_FILE):
-                os.remove(MODEL_STATE_FILE)
-            print("Error: Lost connection to Ollama server")
+        generated_text = call_ollama_api("tinyllama", prompt)
+        
+        if generated_text is None:
             return None
+
+        # Check if the plant is unknown
+        unknown_patterns = [
+            "not a known plant",
+            "don't recognize this plant",
+            "couldn't find information",
+            "not a recognized plant",
+            "unable to identify",
+            "not a valid plant",
+        ]
+
+        if any(
+            pattern.lower() in generated_text.lower()
+            for pattern in unknown_patterns
+        ):
+            print(f"'{plant_name}' appears to be unknown.")
+            return None
+
+        return generated_text
     except Exception as e:
         print(f"Error generating instructions: {str(e)}")
         return None
