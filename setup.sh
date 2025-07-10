@@ -2,7 +2,7 @@
 
 # Create and activate virtual environment
 python3 -m venv venv
-source venv/bin/activate
+source env/Scripts/activate
 
 # Install required packages
 pip install -r requirements.txt
@@ -11,8 +11,8 @@ pip install -r requirements.txt
 chmod +x plant_care.py
 
 echo "Setup complete! You can now run the tool with:"
-echo "./venv/bin/python plant_care.py \"Plant Name\""
+echo "python plant_care.py \"Plant Name\""
 echo "Or activate the virtual environment first with:"
-echo "source venv/bin/activate"
+echo "source venv/Scripts/activate"
 echo "Then run:"
-echo "./plant_care.py \"Plant Name\"" 
+echo "python plant_care.py \"Plant Name\"" 

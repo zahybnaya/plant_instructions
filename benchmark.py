@@ -7,6 +7,7 @@ import requests
 import re
 import datetime
 
+
 PLANTS_FILE = "plants.txt"
 INSTRUCTIONS_DIR = "plant_instructions"
 RESULTS_FILE = "benchmark_results_{}.md"  # Will be formatted with timestamp
