@@ -250,7 +250,7 @@ def save_instructions(plant_name, instructions):
     
     os.makedirs("plant_instructions", exist_ok=True)
     
-    if instructions is None:
+    if instructions is None: 
         
         result_file = os.path.join("plant_instructions", f"{sanitize_filename(plant_name)}.txt")
         with open(result_file, "w") as f:
@@ -313,5 +313,4 @@ if __name__ == "__main__":
     
 =======
     main()
-
 
