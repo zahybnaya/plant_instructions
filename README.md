@@ -1,11 +1,11 @@
 # Plant Care Instructions Generator
 
-A command-line tool that generates care instructions for plants using Ollama's tinyllama model.
+A command-line tool that generates care instructions for plants using Groq's AI API.
 
 ## Requirements
 
 - Python 3
-- [Ollama](https://ollama.ai/) installed and running with the tinyllama model
+- Groq API key
 
 ## Setup
 
@@ -17,21 +17,19 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-3. Install the tinyllama model for Ollama (if not already installed):
+3. Set your Groq API key as an environment variable:
 
 ```bash
-# Start Ollama server if not running
-ollama serve  # Run this in a separate terminal or add & to run in background
-
-# Pull the tinyllama model
-ollama pull tinyllama
+export GROQ_API_KEY="your_groq_api_key_here"
 ```
+
+You can get a free API key from [Groq](https://console.groq.com/).
 
 ## Usage
 
-1. Make sure Ollama is running:
+1. Make sure your Groq API key is set:
 ```bash
-ollama serve
+export GROQ_API_KEY="your_groq_api_key_here"
 ```
 
 2. Run the tool with a plant name:
@@ -41,17 +39,30 @@ ollama serve
 
 # OR activate the virtual environment first
 source venv/bin/activate
-./plant_care.py "Snake Plant"
+python plant_care.py "Snake Plant"
 ```
 
-3. The generated care instructions will be saved as a markdown file in the `plant_instructions` directory.
-
-4. If the plant is unknown, a file containing "None" will be created instead.
+3. The generated care instructions will be displayed directly in the console as markdown.
 
 ## Example
 
 ```bash
-./plant_care.py "Fiddle Leaf Fig"
+python plant_care.py "Fiddle Leaf Fig"
 ```
 
-This will generate a markdown file with comprehensive care instructions for a Fiddle Leaf Fig plant. 
+This will generate and display comprehensive care instructions for a Fiddle Leaf Fig plant directly in the terminal.
+
+## Features
+
+- Generates comprehensive plant care instructions including:
+  - Common and scientific names
+  - Watering requirements
+  - Light needs
+  - Soil preferences
+  - Temperature and humidity requirements
+  - Fertilization schedule
+  - Propagation methods
+  - Common problems and solutions
+  - Special care notes
+- Uses Groq's fast AI model for quick responses
+- Outputs formatted markdown directly to console 
